@@ -23,6 +23,9 @@ private:
     void initVariables();
     void initWindow();
 
+    // Game Objects
+    sf::RectangleShape enemy;
+
 public:
     // Constructor & Destructors
     Game();
@@ -35,4 +38,5 @@ public:
     void update();
     void render();
     void pollEvents();
+    void initEnemies();
 };

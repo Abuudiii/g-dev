@@ -3,13 +3,15 @@
 
 /**
  * @brief Constructor
- * - Calls member variables for initialization
+ * - Calls member variables and initializes them
+ * - Uses init functions to do this
  */
 Game::Game()
 {
     // Init variables and window (heap allocation)
     this->initVariables();
     this->initWindow();
+    this->initEnemies();
 }
 
 
@@ -23,6 +25,50 @@ Game::~Game()
     delete this->window;
 }
 
+/**
+ * @brief Initializes member variables
+ * @return (void)
+ * - Sets window to nullptr
+ */
+void Game::initVariables() {
+    this->window = nullptr;
+}
+
+/**
+ * @brief Initializes window
+ * @return (void)
+ * - Sets width and height
+ * - Allocates new window on heap
+ * - Initializes window with configured params
+ */
+void Game::initWindow() {
+    this->videoMode.height = 600;
+    this->videoMode.width = 800;
+    this->window = new sf::RenderWindow(this->videoMode, "Game!", sf::Style::Titlebar | sf::Style::Close);
+
+    this->window->setFramerateLimit(100);
+}
+
+
+/**
+ * @brief Initializes and configures enemy object
+ * @return (void)
+ */
+void Game::initEnemies() {
+    this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
+    this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+    this->enemy.setFillColor(sf::Color::Cyan);
+    this->enemy.setOutlineColor(sf::Color::Red);
+    this->enemy.setOutlineThickness(1.f);
+}
+
+/**
+ * @brief Checks window status to allow polling
+ * @return bool
+ */
+const bool Game::isWindowOpen() const {
+    return this->window->isOpen();
+} 
 /**
  * @brief Polls for events
  * @return (void)
@@ -54,51 +100,16 @@ void Game::update() {
 /**
  * @brief Renders game objects
  * @return (void)
- * - Clears current frame
+ * - Clears current window
  * - Draws Objects
  * - Displays output to screen
  */
 void Game::render() {
 
-    this->window->clear(sf::Color(255, 0, 0, 255));
+    this->window->clear();
 
     // Draw Game
+    this->window->draw(this->enemy);
 
     this->window->display();
 }
-
-void Game::pollEvents() {
-
-}
-
-
-/**
- * @brief Initializes member variables
- * @return (void)
- * - Sets window to nullptr
- */
-void Game::initVariables() {
-    this->window = nullptr;
-}
-
-
-/**
- * @brief Initializes window
- * @return (void)
- * - Sets width and height
- * - Allocates new window on heap
- * - Initializes window with configured params
- */
-void Game::initWindow() {
-    this->videoMode.height = 600;
-    this->videoMode.width = 800;
-    this->window = new sf::RenderWindow(this->videoMode, "Game!", sf::Style::Titlebar | sf::Style::Close);
-}
-
-/**
- * @brief Checks window status to allow polling
- * @return bool
- */
-const bool Game::isWindowOpen() const {
-    return this->window->isOpen();
-} 
