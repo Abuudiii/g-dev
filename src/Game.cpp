@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include <iostream>
 
 /**
  * @brief Constructor
@@ -57,6 +57,7 @@ void Game::initWindow() {
 void Game::initEnemies() {
     this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
     this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+    this->enemy.setScale(sf::Vector2f(2.f, 2.f));
     this->enemy.setFillColor(sf::Color::Cyan);
     this->enemy.setOutlineColor(sf::Color::Red);
     this->enemy.setOutlineThickness(1.f);
@@ -69,15 +70,29 @@ void Game::initEnemies() {
 const bool Game::isWindowOpen() const {
     return this->window->isOpen();
 } 
+
+
+/**
+ * @brief Polls for events and makes appropriate updates
+ * @return (void)
+ */
+void Game::update() {
+    this->pollEvents();
+
+    // Update mouse position
+    std::cout << "Mouse Position: " 
+              << sf::Mouse::getPosition(*this->window).x << " " 
+              << sf::Mouse::getPosition(*this->window).y;
+}
+
 /**
  * @brief Polls for events
  * @return (void)
  * - Loops and checks for events
  * - Switch case handles appropriate actions
  */
-void Game::update() {
-
-    while (this->window->pollEvent(this->ev)) {
+void Game::pollEvents() {
+        while (this->window->pollEvent(this->ev)) {
 
         switch (this->ev.type) {
 
