@@ -6,9 +6,11 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
-/*
-    Game Engine Class
-*/
+/**
+ * @brief Game class to display output
+ * @author Abdullah Sheikh
+ * @since Thu Dec 04 2025
+ */
 class Game
 {
 private:

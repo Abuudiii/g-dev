@@ -1,8 +1,10 @@
 #include "Game.h"
 
-/*
-    Constructor and Destructor
-*/
+
+/**
+ * @brief Constructor
+ * - Calls member variables for initialization
+ */
 Game::Game()
 {
     // Init variables and window (heap allocation)
@@ -11,22 +13,24 @@ Game::Game()
 }
 
 
+/**
+ * @brief Destructor
+ * Frees the heap allocated window pointer
+ */
 Game::~Game()
 {
     // Freeing heap allocated memory
     delete this->window;
 }
 
-/*
-    Public Function Definitions
-*/
+/**
+ * @brief Polls for events
+ * @return (void)
+ * - Loops and checks for events
+ * - Switch case handles appropriate actions
+ */
 void Game::update() {
 
-    /*
-        Polls for events
-        1. Switch case checks for events occuring
-        2. Takes acion accordingly
-    */
     while (this->window->pollEvent(this->ev)) {
 
         switch (this->ev.type) {
@@ -47,14 +51,14 @@ void Game::update() {
     }
 }
 
+/**
+ * @brief Renders game objects
+ * @return (void)
+ * - Clears current frame
+ * - Draws Objects
+ * - Displays output to screen
+ */
 void Game::render() {
-
-    /*
-        Renders game objects
-        1. Clear old display
-        2. Draw objects
-        3. Display frame in window
-    */
 
     this->window->clear(sf::Color(255, 0, 0, 255));
 
@@ -67,23 +71,34 @@ void Game::pollEvents() {
 
 }
 
-/*
-    Private Function Definitions
-*/
+
+/**
+ * @brief Initializes member variables
+ * @return (void)
+ * - Sets window to nullptr
+ */
 void Game::initVariables() {
     this->window = nullptr;
 }
 
+
+/**
+ * @brief Initializes window
+ * @return (void)
+ * - Sets width and height
+ * - Allocates new window on heap
+ * - Initializes window with configured params
+ */
 void Game::initWindow() {
     this->videoMode.height = 600;
     this->videoMode.width = 800;
-    this->videoMode.getDesktopMode;
     this->window = new sf::RenderWindow(this->videoMode, "Game!", sf::Style::Titlebar | sf::Style::Close);
 }
 
-/*
-    Accessor Functions
-*/
+/**
+ * @brief Checks window status to allow polling
+ * @return bool
+ */
 const bool Game::isWindowOpen() const {
     return this->window->isOpen();
 } 
