@@ -42,7 +42,9 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // Game Logic
+    this->endGame = false;
     this->points = 0;
+    this->health = 10;
     this->enemySpawnTimerMax = 50.f;
     this->enemySpawnTimer = 0.f;
     this->maxEnemies = 50;
@@ -102,9 +104,21 @@ void Game::initText() {
  */
 void Game::update() {
     this->pollEvents();
-    this->updateMousePosition();
-    this->updateEnemies();
-    this->updateText();
+
+    // Only update if game is running
+    if (!this->endGame) {
+
+        // Updates all components continuously
+        this->updateMousePosition();
+        this->updateEnemies();
+        this->updateText();
+
+    }
+
+    // Game terminates if health goes <= 0
+    if (this->health <= 0) {
+        this->endGame = true;
+    }
 }
 
 /**
@@ -158,16 +172,12 @@ void Game::updateEnemies() {
     // Spawning enemy based off a time and resetting the timer
     if (this->enemies.size() < this->maxEnemies) { 
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
-
             // Spawn Enemy
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
-
         } else {
-
             // Increment timer for each update
             this->enemySpawnTimer += 1.f;
-
         }
     }
 
@@ -178,6 +188,7 @@ void Game::updateEnemies() {
         // Delete if clicked
         if (this->enemies[i].getPosition().y > this->window->getSize().y) {
             this->enemies.erase(this->enemies.begin() + i); // Using iterator + ith index to delete the right enemy object
+            this->health -= 1;
         }
     } // End of for loop
 
@@ -199,11 +210,11 @@ void Game::updateEnemies() {
                     this->enemies.erase(this->enemies.begin() + i);
 
                     // Gain Points
-                    this->points += 1.f;
+                    this->points += 1;
                 }
             } // End of for loop
         } 
-        
+
     } else {
             this->mouseHeld = false;
     }
@@ -222,14 +233,6 @@ void Game::updateText() {
 //=============================================================================
 
 /**
- * @brief Checks window status to allow polling
- * @return bool
- */
-const bool Game::isWindowOpen() const {
-    return this->window->isOpen();
-}
-
-/**
  * @brief Spawns enemies and configures attributes
  * @return (void)
  * - Calculates position to stay within frame
@@ -246,6 +249,26 @@ void Game::spawnEnemy() {
 
     // Spawns Enemy
     this->enemies.emplace_back(this->enemy);
+}
+
+//=============================================================================
+// HELPER FUNCTIONS
+//=============================================================================
+
+/**
+ * @brief Checks window status to allow polling
+ * @return bool
+ */
+const bool Game::isWindowOpen() const {
+    return this->window->isOpen();
+}
+
+/**
+ * @brief Accessor to get endgame condition
+ * @return bool 
+ */
+const bool Game::getEndGame() const {
+    return this->endGame;
 }
 
 //=============================================================================

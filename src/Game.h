@@ -34,7 +34,9 @@ private:
     sf::Vector2f mousePosView;
 
     // Game Logic
+    bool endGame;
     unsigned points;
+    int health;
     float enemySpawnTimer;
     float enemySpawnTimerMax;
     int maxEnemies;
@@ -55,6 +57,7 @@ public:
 
     // Accessors
     const bool isWindowOpen() const;
+    const bool getEndGame() const;
 
     // Functions
     void initEnemies();

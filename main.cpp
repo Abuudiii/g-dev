@@ -12,7 +12,7 @@ int main() {
     Game game;
 
     // Game Looping
-    while (game.isWindowOpen()) {
+    while (game.isWindowOpen() && !game.getEndGame()) {
         // Update
         game.update();
 
