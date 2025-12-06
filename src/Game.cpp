@@ -34,9 +34,9 @@ void Game::initVariables() {
 
     // Game Logic
     this->points = 0;
+    this->enemySpawnTimerMax = 50.f;
     this->enemySpawnTimer = 0.f;  
-    this->enemySpawnTimerMax = 1000.f;
-    this->maxEnemies = 5;
+    this->maxEnemies = 50;
 }
 
 /**
@@ -61,7 +61,7 @@ void Game::initWindow() {
  */
 void Game::initEnemies() {
     this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
-    this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+    this->enemy.setSize(sf::Vector2f(10.f, 10.f));
     this->enemy.setScale(sf::Vector2f(2.f, 2.f));
     this->enemy.setFillColor(sf::Color::Cyan);
     this->enemy.setOutlineColor(sf::Color::Red);
@@ -115,37 +115,68 @@ void Game::pollEvents() {
 
 
 /**
- * @brief Handles logic for mouse position member variable
+ * @brief Handles logic for mouse position
  * @return (void)
  */
 void Game::updateMousePosition() {
     this->mousePosWindow = sf::Mouse::getPosition(*this->window);
 }
 
+/**
+ * @brief Spawns enemies and configures attributes
+ * @return (void)
+ * - Calculates position to stay within frame
+ * - Sets enemy color
+ * - Pushes enemy to vector
+ */
 void Game::spawnEnemy() {
-    
+    this->enemy.setPosition(
+        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
+        0.f
+    );
+
+    this->enemy.setFillColor(sf::Color::Green);
+
+    // Spawns Enemy
+    this->enemies.push_back(this->enemy);
 }
 
 /**
- * @brief Keeps track of time and spawns enemies accordingly.
+ * @brief Keeps track of time and spawns enemies accordingly
  * @return (void)
  */
 void Game::updateEnemies() {
 
     // Spawning enemy based off a time and resetting the timer
-    if (this->enemies.size() < this->maxEnemies) {
-        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
+    if (this->enemies.size() < this->maxEnemies)
+    {
+        if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+        {
             // Spawn Enemy
             this->spawnEnemy();
-            this->enemySpawnTimer =0.f;
-        } else {
+            this->enemySpawnTimer = 0.f;
+        }
+        else
+        {
             this->enemySpawnTimer += 1.f;
         }
     }
+
+    // Move enemies downward every frame
+    for (auto& enemy : this->enemies) {
+        enemy.move(0.f, 2.f);
+    }
 }
 
+/**
+ * @brief Renders each enemy in vector
+ * @return (void)
+ */
 void Game::renderEnemies() {
-
+        // Move Enemies
+    for(auto& x : this->enemies) {
+        this->window->draw(x);
+    }
 }
 
 

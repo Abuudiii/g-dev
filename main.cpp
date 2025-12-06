@@ -4,6 +4,10 @@
 using namespace sf;
 
 int main() {
+
+    // Init srand
+    std::srand(static_cast<unsigned>(time(NULL)));
+
     // Init Game Object
     Game game;
 
