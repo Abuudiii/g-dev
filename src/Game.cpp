@@ -38,6 +38,7 @@ Game::~Game()
  * - Sets window to nullptr
  */
 void Game::initVariables() {
+    // Window Init
     this->window = nullptr;
 
     // Game Logic
@@ -45,6 +46,7 @@ void Game::initVariables() {
     this->enemySpawnTimerMax = 50.f;
     this->enemySpawnTimer = 0.f;
     this->maxEnemies = 50;
+    this->mouseHeld = false;
 }
 
 /**
@@ -154,7 +156,7 @@ void Game::updateMousePosition() {
 void Game::updateEnemies() {
 
     // Spawning enemy based off a time and resetting the timer
-    if (this->enemies.size() < this->maxEnemies) {
+    if (this->enemies.size() < this->maxEnemies) { 
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
 
             // Spawn Enemy
@@ -169,33 +171,41 @@ void Game::updateEnemies() {
         }
     }
 
-    // Move enemies and updating
+    // Move and update enemies
     for (int i = 0; i < this->enemies.size(); i++) {
-        bool deleted = false;
-
         this->enemies[i].move(0.f, 2.f);
 
         // Delete if clicked
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
-
-                // Iterator needs pointer and we increment with i to remove right element
-                deleted = true;
-                this->points += 1.f;
-
-            }
-        }
-
-        // Checking if enemy out of bounds
         if (this->enemies[i].getPosition().y > this->window->getSize().y) {
-            deleted = true;
-
+            this->enemies.erase(this->enemies.begin() + i); // Using iterator + ith index to delete the right enemy object
         }
+    } // End of for loop
 
-        // Using status flag to delete enemies
-        if (deleted) {
-            this->enemies.erase(this->enemies.begin() + i);
-        }
+    // Check if mouse is clicked
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        
+        // Check to ensure mouse can't be held
+        if (this->mouseHeld == false) {
+
+            this->mouseHeld = true;
+            bool deleted = false; // Variable to track if an object needs deleting
+
+            // Loop and delete if needed
+            for (size_t i  = 0; i < this->enemies.size() && deleted == false; i++) {
+
+                if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
+                    // Deleted enemy if clicked on
+                    deleted = true;
+                    this->enemies.erase(this->enemies.begin() + i);
+
+                    // Gain Points
+                    this->points += 1.f;
+                }
+            } // End of for loop
+        } 
+        
+    } else {
+            this->mouseHeld = false;
     }
 }
 
