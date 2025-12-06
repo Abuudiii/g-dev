@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <vector>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -23,8 +26,18 @@ private:
     void initVariables();
     void initWindow();
 
+    // Mouse Positions
+    sf::Vector2i mousePosWindow;
+
+    // Game Logic
+    int points;
+    float enemySpawnTimer;
+    float enemySpawnTimerMax;
+    int maxEnemies;
+
     // Game Objects
     sf::RectangleShape enemy;
+    std::vector<sf::RectangleShape> enemies;
 
 public:
     // Constructor & Destructors
@@ -35,8 +48,16 @@ public:
     const bool isWindowOpen() const;
 
     // Functions
-    void update();
-    void render();
-    void pollEvents();
     void initEnemies();
+    void spawnEnemy();
+    void pollEvents();
+
+    // Update Functions
+    void update();
+    void updateMousePosition();
+    void updateEnemies();
+
+    // Render Functions
+    void render();
+    void renderEnemies();
 };

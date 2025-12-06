@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <iostream>
 
 /**
  * @brief Constructor
@@ -32,6 +31,12 @@ Game::~Game()
  */
 void Game::initVariables() {
     this->window = nullptr;
+
+    // Game Logic
+    this->points = 0;
+    this->enemySpawnTimer = 0.f;  
+    this->enemySpawnTimerMax = 1000.f;
+    this->maxEnemies = 5;
 }
 
 /**
@@ -63,6 +68,13 @@ void Game::initEnemies() {
     this->enemy.setOutlineThickness(1.f);
 }
 
+
+
+
+
+
+
+
 /**
  * @brief Checks window status to allow polling
  * @return bool
@@ -72,18 +84,6 @@ const bool Game::isWindowOpen() const {
 } 
 
 
-/**
- * @brief Polls for events and makes appropriate updates
- * @return (void)
- */
-void Game::update() {
-    this->pollEvents();
-
-    // Update mouse position
-    std::cout << "Mouse Position: " 
-              << sf::Mouse::getPosition(*this->window).x << " " 
-              << sf::Mouse::getPosition(*this->window).y;
-}
 
 /**
  * @brief Polls for events
@@ -92,24 +92,79 @@ void Game::update() {
  * - Switch case handles appropriate actions
  */
 void Game::pollEvents() {
-        while (this->window->pollEvent(this->ev)) {
-
+    while (this->window->pollEvent(this->ev)) {
+        
         switch (this->ev.type) {
-
+            
             case sf::Event::Closed:
-                this->window->close();
-                break;
-
+            this->window->close();
+            break;
+            
             case sf::Event::KeyPressed:
-                if (this->ev.key.code == sf::Keyboard::Escape) {
-                    this->window->close();
-                }
-                break;
-
+            if (this->ev.key.code == sf::Keyboard::Escape) {
+                this->window->close();
+            }
+            break;
+            
             default:
-                break;
+            break;
         }
     }
+}
+
+
+
+/**
+ * @brief Handles logic for mouse position member variable
+ * @return (void)
+ */
+void Game::updateMousePosition() {
+    this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+}
+
+void Game::spawnEnemy() {
+    
+}
+
+/**
+ * @brief Keeps track of time and spawns enemies accordingly.
+ * @return (void)
+ */
+void Game::updateEnemies() {
+
+    // Spawning enemy based off a time and resetting the timer
+    if (this->enemies.size() < this->maxEnemies) {
+        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
+            // Spawn Enemy
+            this->spawnEnemy();
+            this->enemySpawnTimer =0.f;
+        } else {
+            this->enemySpawnTimer += 1.f;
+        }
+    }
+}
+
+void Game::renderEnemies() {
+
+}
+
+
+
+
+
+
+
+
+/**
+ * @brief Polls for events and makes appropriate updates
+ * @return (void)
+ */
+void Game::update() {
+    this->pollEvents();
+
+    this->updateEnemies(); 
+
+    this->updateMousePosition();
 }
 
 /**
@@ -120,11 +175,11 @@ void Game::pollEvents() {
  * - Displays output to screen
  */
 void Game::render() {
-
+    
     this->window->clear();
-
+    
     // Draw Game
-    this->window->draw(this->enemy);
-
+    this->renderEnemies();
+    
     this->window->display();
 }
