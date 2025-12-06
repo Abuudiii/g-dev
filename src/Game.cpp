@@ -147,6 +147,9 @@ void Game::spawnEnemy() {
 /**
  * @brief Keeps track of time and spawns enemies accordingly
  * @return (void)
+ * - Spawns new enemies based off timer
+ * - Checks if enemies are out of frames or dead and deletes
+ * - Basically handles the frame by frame update logic
  */
 void Game::updateEnemies() {
 
@@ -164,8 +167,10 @@ void Game::updateEnemies() {
         }
     }
 
-    // Move enemies downward every frame
+    // Move enemies and updating
     for (int i = 0; i < this->enemies.size(); i++) {
+        bool deleted = false;
+        
         this->enemies[i].move(0.f, 2.f);
 
         // Delete if clicked
@@ -173,11 +178,20 @@ void Game::updateEnemies() {
         {    
             if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) 
             {
-                // Iteratort needs pointer and we increment with i to remove right element
-                this->enemies.erase(this->enemies.begin() + i); 
+                // Iterator needs pointer and we increment with i to remove right element
+                deleted = true;
             }
         }
 
+        // Checking if enemy out of bounds
+        if (this->enemies[i].getPosition().y > this->window->getSize().y) {
+            deleted = true;
+        }
+
+        // Using status flag to delete enemies
+        if (deleted) {
+            this->enemies.erase(this->enemies.begin() + i);
+        }
     }
 }
 
