@@ -70,6 +70,7 @@ void Game::initEnemies() {
     this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
     this->enemy.setSize(sf::Vector2f(10.f, 10.f));
     this->enemy.setScale(sf::Vector2f(2.f, 2.f));
+    this->enemies.reserve(this->maxEnemies);
     // this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 }
 
@@ -116,17 +117,19 @@ void Game::pollEvents() {
         switch (this->ev.type) {
 
             case sf::Event::Closed:
-            this->window->close();
-            break;
+
+                this->window->close();
+                break;
 
             case sf::Event::KeyPressed:
-            if (this->ev.key.code == sf::Keyboard::Escape) {
-                this->window->close();
-            }
-            break;
+
+                if (this->ev.key.code == sf::Keyboard::Escape) {
+                    this->window->close();
+                }
+                break;
 
             default:
-            break;
+                break;
         }
     }
 }
@@ -232,7 +235,7 @@ void Game::spawnEnemy() {
     this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 
     // Spawns Enemy
-    this->enemies.push_back(this->enemy);
+    this->enemies.emplace_back(this->enemy);
 }
 
 //=============================================================================
