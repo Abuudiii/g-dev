@@ -1,5 +1,9 @@
 #include "Game.h"
 
+//=============================================================================
+// CONSTRUCTORS & DESTRUCTORS
+//=============================================================================
+
 /**
  * @brief Constructor
  * - Calls member variables and initializes them
@@ -14,7 +18,6 @@ Game::Game()
     this->initText();
 }
 
-
 /**
  * @brief Destructor
  * Frees the heap allocated window pointer
@@ -24,6 +27,10 @@ Game::~Game()
     // Freeing heap allocated memory
     delete this->window;
 }
+
+//=============================================================================
+// INIT FUNCTIONS
+//=============================================================================
 
 /**
  * @brief Initializes member variables
@@ -36,7 +43,7 @@ void Game::initVariables() {
     // Game Logic
     this->points = 0;
     this->enemySpawnTimerMax = 50.f;
-    this->enemySpawnTimer = 0.f;  
+    this->enemySpawnTimer = 0.f;
     this->maxEnemies = 50;
 }
 
@@ -55,7 +62,6 @@ void Game::initWindow() {
     this->window->setFramerateLimit(100);
 }
 
-
 /**
  * @brief Initializes and configures enemy object
  * @return (void)
@@ -67,22 +73,36 @@ void Game::initEnemies() {
     // this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 }
 
+/**
+ * @brief Initializes font for text
+ * @return (void)
+ * - Loads font file and inits text
+ * - Configures font attributes
+ */
+void Game::initText() {
 
+    // Loads font and configures text
+    this->font.loadFromFile("../src/fonts/Arial.ttf");
+    this->text.setFont(this->font);
+    this->text.setCharacterSize(20);
+    this->text.setStyle(sf::Text::Bold);
+    this->text.setFillColor(sf::Color::Red);
+}
 
-
-
-
-
+//=============================================================================
+// UPDATE FUNCTIONS
+//=============================================================================
 
 /**
- * @brief Checks window status to allow polling
- * @return bool
+ * @brief Polls for events and makes appropriate updates
+ * @return (void)
  */
-const bool Game::isWindowOpen() const {
-    return this->window->isOpen();
-} 
-
-
+void Game::update() {
+    this->pollEvents();
+    this->updateMousePosition();
+    this->updateEnemies();
+    this->updateText();
+}
 
 /**
  * @brief Polls for events
@@ -92,19 +112,19 @@ const bool Game::isWindowOpen() const {
  */
 void Game::pollEvents() {
     while (this->window->pollEvent(this->ev)) {
-        
+
         switch (this->ev.type) {
-            
+
             case sf::Event::Closed:
             this->window->close();
             break;
-            
+
             case sf::Event::KeyPressed:
             if (this->ev.key.code == sf::Keyboard::Escape) {
                 this->window->close();
             }
             break;
-            
+
             default:
             break;
         }
@@ -116,31 +136,9 @@ void Game::pollEvents() {
  * @return (void)
  */
 void Game::updateMousePosition() {
-
     // We take window and map to view as floats
     this->mousePosWindow = sf::Mouse::getPosition(*this->window);
     this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
-
-}
-
-
-/**
- * @brief Spawns enemies and configures attributes
- * @return (void)
- * - Calculates position to stay within frame
- * - Sets enemy color
- * - Pushes enemy to vector
- */
-void Game::spawnEnemy() {
-    this->enemy.setPosition(
-        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
-        0.f
-    );
-
-    this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
-
-    // Spawns Enemy
-    this->enemies.push_back(this->enemy);
 }
 
 /**
@@ -155,11 +153,11 @@ void Game::updateEnemies() {
     // Spawning enemy based off a time and resetting the timer
     if (this->enemies.size() < this->maxEnemies) {
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
-                
+
             // Spawn Enemy
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
-            
+
         } else {
 
             // Increment timer for each update
@@ -171,11 +169,11 @@ void Game::updateEnemies() {
     // Move enemies and updating
     for (int i = 0; i < this->enemies.size(); i++) {
         bool deleted = false;
-        
+
         this->enemies[i].move(0.f, 2.f);
 
         // Delete if clicked
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {    
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
 
                 // Iterator needs pointer and we increment with i to remove right element
@@ -199,69 +197,47 @@ void Game::updateEnemies() {
 }
 
 /**
- * @brief Renders each enemy in vector
- * @return (void)
- */
-void Game::renderEnemies() {
-        // Move Enemies
-    for(auto& x : this->enemies) {
-        this->window->draw(x);
-    }
-}
-
-/**
- * @brief Initializes font for text
- * @return (void)
- * - Loads font file and inits text
- * - Configures font attributes
- */
-void Game::initText() {
-
-    // Loads font and configures text
-    this->font.loadFromFile("../src/fonts/Arial.ttf");
-    this->text.setFont(this->font);
-    this->text.setCharacterSize(20);
-    this->text.setString("Points:");
-    this->text.setStyle(sf::Text::Bold);
-    this->text.setFillColor(sf::Color::Red);
-}
-
-/**
  * @brief Updates our text to show count as it updates
  * @return (void)
  */
 void Game::updateText() {
+    this->text.setString("Points: " + std::to_string(this->points));
+}
 
+//=============================================================================
+// HELPER FUNCTIONS
+//=============================================================================
+
+/**
+ * @brief Checks window status to allow polling
+ * @return bool
+ */
+const bool Game::isWindowOpen() const {
+    return this->window->isOpen();
 }
 
 /**
- * @brief Draws font to window
+ * @brief Spawns enemies and configures attributes
  * @return (void)
+ * - Calculates position to stay within frame
+ * - Sets enemy color
+ * - Pushes enemy to vector
  */
-void Game::renderText() {
-    this->window->draw(this->text);
+void Game::spawnEnemy() {
+    this->enemy.setPosition(
+        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
+        0.f
+    );
+
+    this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+
+    // Spawns Enemy
+    this->enemies.push_back(this->enemy);
 }
 
-
-
-
-
-
-
-
-/**
- * @brief Polls for events and makes appropriate updates
- * @return (void)
- */
-void Game::update() {
-    this->pollEvents();
-
-    this->updateEnemies(); 
-
-    this->updateText();
-
-    this->updateMousePosition();
-}
+//=============================================================================
+// RENDER FUNCTIONS
+//=============================================================================
 
 /**
  * @brief Renders game objects
@@ -271,12 +247,30 @@ void Game::update() {
  * - Displays output to screen
  */
 void Game::render() {
-    
+
     this->window->clear();
-    
+
     // Draw Game
     this->renderEnemies();
     this->renderText();
-    
+
     this->window->display();
+}
+
+/**
+ * @brief Renders each enemy in vector
+ * @return (void)
+ */
+void Game::renderEnemies() {
+    for(auto& x : this->enemies) {
+        this->window->draw(x);
+    }
+}
+
+/**
+ * @brief Draws font to window
+ * @return (void)
+ */
+void Game::renderText() {
+    this->window->draw(this->text);
 }
