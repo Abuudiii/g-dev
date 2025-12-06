@@ -9,6 +9,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 /**
  * @brief Game class to display output
@@ -41,6 +43,10 @@ private:
     sf::RectangleShape enemy;
     std::vector<sf::RectangleShape> enemies;
 
+    // Text Objects
+    sf::Font font;
+    sf::Text text;
+
 public:
     // Constructor & Destructors
     Game();
@@ -53,13 +59,16 @@ public:
     void initEnemies();
     void spawnEnemy();
     void pollEvents();
+    void initText();
 
     // Update Functions
     void update();
     void updateMousePosition();
     void updateEnemies();
+    void updateText();
 
     // Render Functions
     void render();
     void renderEnemies();
+    void renderText();
 };

@@ -11,6 +11,7 @@ Game::Game()
     this->initVariables();
     this->initWindow();
     this->initEnemies();
+    this->initText();
 }
 
 
@@ -63,7 +64,7 @@ void Game::initEnemies() {
     this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
     this->enemy.setSize(sf::Vector2f(10.f, 10.f));
     this->enemy.setScale(sf::Vector2f(2.f, 2.f));
-    this->enemy.setFillColor(sf::Color::Cyan);
+    // this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 }
 
 
@@ -136,7 +137,7 @@ void Game::spawnEnemy() {
         0.f
     );
 
-    this->enemy.setFillColor(sf::Color::Green);
+    this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 
     // Spawns Enemy
     this->enemies.push_back(this->enemy);
@@ -153,15 +154,17 @@ void Game::updateEnemies() {
 
     // Spawning enemy based off a time and resetting the timer
     if (this->enemies.size() < this->maxEnemies) {
-        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) 
-        {    
+        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
+                
             // Spawn Enemy
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
-        } 
-        else 
-        {
+            
+        } else {
+
+            // Increment timer for each update
             this->enemySpawnTimer += 1.f;
+
         }
     }
 
@@ -178,7 +181,7 @@ void Game::updateEnemies() {
                 // Iterator needs pointer and we increment with i to remove right element
                 deleted = true;
                 this->points += 1.f;
-                
+
             }
         }
 
@@ -206,6 +209,39 @@ void Game::renderEnemies() {
     }
 }
 
+/**
+ * @brief Initializes font for text
+ * @return (void)
+ * - Loads font file and inits text
+ * - Configures font attributes
+ */
+void Game::initText() {
+
+    // Loads font and configures text
+    this->font.loadFromFile("../src/fonts/Arial.ttf");
+    this->text.setFont(this->font);
+    this->text.setCharacterSize(20);
+    this->text.setString("Points:");
+    this->text.setStyle(sf::Text::Bold);
+    this->text.setFillColor(sf::Color::Red);
+}
+
+/**
+ * @brief Updates our text to show count as it updates
+ * @return (void)
+ */
+void Game::updateText() {
+
+}
+
+/**
+ * @brief Draws font to window
+ * @return (void)
+ */
+void Game::renderText() {
+    this->window->draw(this->text);
+}
+
 
 
 
@@ -221,6 +257,8 @@ void Game::update() {
     this->pollEvents();
 
     this->updateEnemies(); 
+
+    this->updateText();
 
     this->updateMousePosition();
 }
@@ -238,6 +276,7 @@ void Game::render() {
     
     // Draw Game
     this->renderEnemies();
+    this->renderText();
     
     this->window->display();
 }
