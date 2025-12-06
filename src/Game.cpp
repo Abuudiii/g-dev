@@ -110,8 +110,6 @@ void Game::pollEvents() {
     }
 }
 
-
-
 /**
  * @brief Handles logic for mouse position
  * @return (void)
@@ -174,18 +172,20 @@ void Game::updateEnemies() {
         this->enemies[i].move(0.f, 2.f);
 
         // Delete if clicked
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
-        {    
-            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) 
-            {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {    
+            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
+
                 // Iterator needs pointer and we increment with i to remove right element
                 deleted = true;
+                this->points += 1.f;
+                
             }
         }
 
         // Checking if enemy out of bounds
         if (this->enemies[i].getPosition().y > this->window->getSize().y) {
             deleted = true;
+
         }
 
         // Using status flag to delete enemies
