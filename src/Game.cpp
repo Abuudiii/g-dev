@@ -64,8 +64,6 @@ void Game::initEnemies() {
     this->enemy.setSize(sf::Vector2f(10.f, 10.f));
     this->enemy.setScale(sf::Vector2f(2.f, 2.f));
     this->enemy.setFillColor(sf::Color::Cyan);
-    this->enemy.setOutlineColor(sf::Color::Red);
-    this->enemy.setOutlineThickness(1.f);
 }
 
 
@@ -119,8 +117,13 @@ void Game::pollEvents() {
  * @return (void)
  */
 void Game::updateMousePosition() {
+
+    // We take window and map to view as floats
     this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+    this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
+
 }
+
 
 /**
  * @brief Spawns enemies and configures attributes
@@ -148,23 +151,33 @@ void Game::spawnEnemy() {
 void Game::updateEnemies() {
 
     // Spawning enemy based off a time and resetting the timer
-    if (this->enemies.size() < this->maxEnemies)
-    {
-        if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
-        {
+    if (this->enemies.size() < this->maxEnemies) {
+        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) 
+        {    
             // Spawn Enemy
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
-        }
-        else
+        } 
+        else 
         {
             this->enemySpawnTimer += 1.f;
         }
     }
 
     // Move enemies downward every frame
-    for (auto& enemy : this->enemies) {
-        enemy.move(0.f, 2.f);
+    for (int i = 0; i < this->enemies.size(); i++) {
+        this->enemies[i].move(0.f, 2.f);
+
+        // Delete if clicked
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+        {    
+            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) 
+            {
+                // Iteratort needs pointer and we increment with i to remove right element
+                this->enemies.erase(this->enemies.begin() + i); 
+            }
+        }
+
     }
 }
 
