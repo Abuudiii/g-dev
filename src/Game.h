@@ -59,9 +59,11 @@ public:
     const bool isWindowOpen() const;
     const bool getEndGame() const;
 
-    // Functions
+    // Init Functions
     void initEnemies();
     void initText();
+
+    // Helper Functions
     void spawnEnemy();
     void pollEvents();
 
