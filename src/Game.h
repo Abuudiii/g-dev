@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -76,5 +77,5 @@ public:
     // Render Functions
     void render();
     void renderEnemies();
-    void renderText();
+    void renderText(sf::RenderTarget& target);
 };

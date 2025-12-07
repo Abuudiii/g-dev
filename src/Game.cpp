@@ -225,7 +225,11 @@ void Game::updateEnemies() {
  * @return (void)
  */
 void Game::updateText() {
-    this->text.setString("Points: " + std::to_string(this->points));
+    std::stringstream ss;
+
+    ss << "Points: " << this->points;
+
+    this->text.setString(ss.str());
 }
 
 //=============================================================================
@@ -288,7 +292,7 @@ void Game::render() {
 
     // Draw Game
     this->renderEnemies();
-    this->renderText();
+    this->renderText(*this->window);
 
     this->window->display();
 }
@@ -307,6 +311,6 @@ void Game::renderEnemies() {
  * @brief Draws font to window
  * @return (void)
  */
-void Game::renderText() {
-    this->window->draw(this->text);
+void Game::renderText(sf::RenderTarget& target) {
+    target.draw(this->text);
 }
