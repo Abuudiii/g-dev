@@ -12,7 +12,7 @@ find_package(SFML 2.6 COMPONENTS graphics window system audio network REQUIRED)
 include_directories(src)
 
 # Create executable from source files
-add_executable(game main.cpp src/Game.cpp)
+add_executable(game main.cpp src/Game.cpp src/Player.cpp)
 
 # Link SFML libraries (SFML 2 uses sfml- prefix)
 target_link_libraries(game sfml-graphics sfml-window sfml-system sfml-audio sfml-network)

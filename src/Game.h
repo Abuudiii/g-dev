@@ -9,6 +9,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 
+#include "Player.h"
+
 class Game {
 
 private:
@@ -18,6 +20,9 @@ private:
     sf::RenderWindow* window;
     sf::Event ev;
     bool endGame;
+
+    // Player Object
+    Player player;
 
     // Private Init Functions
     void initVariables();

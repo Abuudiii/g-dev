@@ -107,6 +107,7 @@ void Game::render() {
     this->window->clear();
 
     // Render Game Objects
+    this->player.render(this->window);
 
     this->window->display();
 }

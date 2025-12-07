@@ -9,10 +9,12 @@
 class Player {
 
 private:
+    // Object Attributes
     sf::RectangleShape shape;
 
+    // Init Functions
     void initVariables();
-    void initShapes();
+    void initShape();
 
 public:
 
@@ -20,4 +22,15 @@ public:
     Player();
     ~Player();
 
-}
+    // Accessors
+
+
+    // Modifiers
+
+
+    // Update Functions
+    void update();
+
+    // Render Functions
+    void render(sf::RenderTarget* target);
+};
