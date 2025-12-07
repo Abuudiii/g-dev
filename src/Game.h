@@ -61,9 +61,9 @@ public:
 
     // Functions
     void initEnemies();
+    void initText();
     void spawnEnemy();
     void pollEvents();
-    void initText();
 
     // Update Functions
     void update();
