@@ -1,10 +1,14 @@
-#include <iostream>
 #include "Game.h"
 
-using namespace sf;
-
 int main() {
-     
+    // Init Srand
+    srand(static_cast<unsigned>(time(0)));
 
+    // Init Game Object
+    Game game;
+
+    // Game Loop
+
+    // End of application
     return 0;
 }
