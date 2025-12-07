@@ -9,7 +9,8 @@ int main() {
 
     // Game Loop
     while (game.isRunning()) {
-        
+        game.update();
+        game.render();
     }
 
     // End of application
