@@ -1,81 +1,49 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include <ctime>
-#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Font.hpp>
 
-/**
- * @brief Game class to display output
- * @author Abdullah Sheikh
- * @since Thu Dec 04 2025
- */
-class Game
-{
+#include "Player.h"
+
+class Game {
+
 private:
-    // Private Members
-    sf::RenderWindow* window;
-    sf::VideoMode videoMode;
-    sf::Event ev;
 
-    // Private Functions
+    // Game Loop Variables
+    sf::VideoMode videoMode;
+    sf::RenderWindow* window;
+    sf::Event ev;
+    bool endGame;
+
+    // Player Object
+    Player player;
+
+    // Private Init Functions
     void initVariables();
     void initWindow();
 
-    // Mouse Positions
-    sf::Vector2i mousePosWindow;
-    sf::Vector2f mousePosView;
-
-    // Game Logic
-    bool endGame;
-    unsigned points;
-    int health;
-    float enemySpawnTimer;
-    float enemySpawnTimerMax;
-    int maxEnemies;
-    bool mouseHeld;
-
-    // Game Objects
-    sf::RectangleShape enemy;
-    std::vector<sf::RectangleShape> enemies;
-
-    // Text Objects
-    sf::Font font;
-    sf::Text text;
-
 public:
-    // Constructor & Destructors
+    // Constructors
     Game();
-    virtual ~Game();
+    ~Game();
 
-    // Accessors
-    const bool isWindowOpen() const;
-    const bool getEndGame() const;
-
-    // Init Functions
-    void initEnemies();
-    void initText();
-
-    // Helper Functions
-    void spawnEnemy();
+    // Accessors (get from class)
+    const bool isRunning() const;
     void pollEvents();
 
+    // Modifiers (modify stuff in class)
+
+    // Init Functions
+    
     // Update Functions
     void update();
-    void updateMousePosition();
-    void updateEnemies();
-    void updateText();
 
     // Render Functions
     void render();
-    void renderEnemies();
-    void renderText(sf::RenderTarget& target);
-};
+}; 

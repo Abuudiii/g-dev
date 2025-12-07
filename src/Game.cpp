@@ -1,30 +1,21 @@
-#include "Game.h"
+#include <Game.h>
 
 //=============================================================================
 // CONSTRUCTORS & DESTRUCTORS
 //=============================================================================
 
 /**
- * @brief Constructor
- * - Calls member variables and initializes them
- * - Uses init functions to do this
+ * @brief Constructor to initialize
  */
-Game::Game()
-{
-    // Init variables and window (heap allocation)
+Game::Game() {
     this->initVariables();
     this->initWindow();
-    this->initEnemies();
-    this->initText();
 }
 
 /**
- * @brief Destructor
- * Frees the heap allocated window pointer
+ * @brief Destructor to clean up heap allocated memory
  */
-Game::~Game()
-{
-    // Freeing heap allocated memory
+Game::~Game() {
     delete this->window;
 }
 
@@ -33,293 +24,75 @@ Game::~Game()
 //=============================================================================
 
 /**
- * @brief Initializes member variables
+ * @brief Inits member variables
  * @return (void)
- * - Sets window to nullptr
  */
 void Game::initVariables() {
-    // Window Init
-    this->window = nullptr;
-
-    // Game Logic
     this->endGame = false;
-    this->points = 0;
-    this->health = 10;
-    this->enemySpawnTimerMax = 50.f;
-    this->enemySpawnTimer = 0.f;
-    this->maxEnemies = 50;
-    this->mouseHeld = false;
 }
 
 /**
- * @brief Initializes window
+ * @brief Sets up window and its attributes
  * @return (void)
- * - Sets width and height
- * - Allocates new window on heap
- * - Initializes window with configured params
  */
 void Game::initWindow() {
-    this->videoMode.height = 600;
-    this->videoMode.width = 800;
-    this->window = new sf::RenderWindow(this->videoMode, "Game!", sf::Style::Titlebar | sf::Style::Close);
-
-    this->window->setFramerateLimit(100);
+    this->videoMode = sf::VideoMode(800, 600);
+    this->window = new sf::RenderWindow(this->videoMode, "Game Practice!", sf::Style::Close | sf::Style::Titlebar);
 }
+
+//=============================================================================
+// ACCESSORS
+//=============================================================================
 
 /**
- * @brief Initializes and configures enemy object
- * @return (void)
+ * @brief Checks if game is still running
+ * @return bool
  */
-void Game::initEnemies() {
-    this->enemy.setPosition(this->videoMode.height/2, this->videoMode.width/2);
-    this->enemy.setSize(sf::Vector2f(10.f, 10.f));
-    this->enemy.setScale(sf::Vector2f(2.f, 2.f));
-    this->enemies.reserve(this->maxEnemies);
-    // this->enemy.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+const bool Game::isRunning() const {
+    return this->window->isOpen();
 }
 
-/**
- * @brief Initializes font for text
- * @return (void)
- * - Loads font file and inits text
- * - Configures font attributes
- */
-void Game::initText() {
-
-    // Loads font and configures text
-    this->font.loadFromFile("../src/fonts/Arial.ttf");
-    this->text.setFont(this->font);
-    this->text.setCharacterSize(20);
-    this->text.setStyle(sf::Text::Bold);
-    this->text.setFillColor(sf::Color::Red);
-}
+//=============================================================================
+// MODIFIERS
+//=============================================================================
 
 //=============================================================================
 // UPDATE FUNCTIONS
 //=============================================================================
 
 /**
- * @brief Polls for events and makes appropriate updates
+ * @brief Main update for game loop that handles all game related updates
  * @return (void)
  */
 void Game::update() {
     this->pollEvents();
-
-    // Only update if game is running
-    if (!this->endGame) {
-
-        // Updates all components continuously
-        this->updateMousePosition();
-        this->updateEnemies();
-        this->updateText();
-
-    }
-
-    // Game terminates if health goes <= 0
-    if (this->health <= 0) {
-        this->endGame = true;
-    }
 }
 
 /**
- * @brief Polls for events
+ * @brief Polls for window events
  * @return (void)
- * - Loops and checks for events
- * - Switch case handles appropriate actions
  */
 void Game::pollEvents() {
-    while (this->window->pollEvent(this->ev)) {
 
-        switch (this->ev.type) {
+    // Poll Event Loop
+    while(this->window->pollEvent(this->ev)) {
+        switch (this->ev.type)
+        {
+        case sf::Event::Closed:
+            this->window->close();
+            break;
 
-            case sf::Event::Closed:
-
+        case sf::Event::KeyPressed:
+            if(this->ev.key.code == sf::Keyboard::Escape) {
                 this->window->close();
-                break;
+            }
+            break;
 
-            case sf::Event::KeyPressed:
-
-                if (this->ev.key.code == sf::Keyboard::Escape) {
-                    this->window->close();
-                }
-                break;
-
-            default:
-                break;
+        default:
+            break;
         }
+
     }
-}
-
-/**
- * @brief Handles logic for mouse position
- * @return (void)
- */
-void Game::updateMousePosition() {
-    // We take window and map to view as floats
-    this->mousePosWindow = sf::Mouse::getPosition(*this->window);
-    this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
-}
-
-/**
- * @brief Keeps track of time and spawns enemies accordingly
- * @return (void)
- * - Spawns new enemies based off timer
- * - Checks if enemies are out of frames or dead and deletes
- * - Basically handles the frame by frame update logic
- */
-void Game::updateEnemies() {
-
-    // Spawning enemy based off a time and resetting the timer
-    if (this->enemies.size() < this->maxEnemies) { 
-        if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
-            // Spawn Enemy
-            this->spawnEnemy();
-            this->enemySpawnTimer = 0.f;
-        } else {
-            // Increment timer for each update
-            this->enemySpawnTimer += 1.f;
-        }
-    }
-
-    // Move and update enemies
-    for (int i = 0; i < this->enemies.size(); i++) {
-        this->enemies[i].move(0.f, 2.f);
-
-        // Delete if clicked
-        if (this->enemies[i].getPosition().y > this->window->getSize().y) {
-            this->enemies.erase(this->enemies.begin() + i); // Using iterator + ith index to delete the right enemy object
-            this->health -= 1;
-        }
-    } // End of for loop
-
-    // Check if mouse is clicked
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        
-        // Check to ensure mouse can't be held
-        if (this->mouseHeld == false) {
-
-            this->mouseHeld = true;
-            bool deleted = false; // Variable to track if an object needs deleting
-
-            // Loop and delete if needed
-            for (size_t i  = 0; i < this->enemies.size() && deleted == false; i++) {
-                if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
-                    
-                    // Allocating points based off enemy color
-                    if (this->enemies[i].getFillColor() == sf::Color::Red) {
-                        // Gain Points
-                        this->points += 10;
-                    } else if (this->enemies[i].getFillColor() == sf::Color::Blue) {
-                        // Gain Points
-                        this->points += 5;
-                    } else if (this->enemies[i].getFillColor() == sf::Color::Green) {
-                        // Gain Points
-                        this->points += 3;
-                    } else if (this->enemies[i].getFillColor() == sf::Color::Cyan) {
-                        // Gain Points
-                        this->points += 2;
-                    } else {
-                        // Gain Points
-                        this->points += 1;
-                    }
-                    
-                    // Deleted enemy if clicked on
-                    deleted = true;
-                    this->enemies.erase(this->enemies.begin() + i);
-
-                }
-            } // End of for loop
-        } 
-
-    } else {
-            this->mouseHeld = false;
-    }
-}
-
-/**
- * @brief Updates our text to show count as it updates
- * @return (void)
- */
-void Game::updateText() {
-    std::stringstream ss;
-
-    ss << "Points: " << this->points << "\n"
-        << "Health: " << this->health<< "\n";
-
-    this->text.setString(ss.str());
-}
-
-//=============================================================================
-// HELPER FUNCTIONS
-//=============================================================================
-
-/**
- * @brief Spawns enemies and configures attributes
- * @return (void)
- * - Calculates position to stay within frame
- * - Sets enemy color and difficulty
- * - Pushes enemy to vector
- */
-void Game::spawnEnemy() {
-    this->enemy.setPosition(
-        static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)),
-        0.f
-    );
-
-    // Randomize Enemy Type
-    int type = rand() % 5;
-
-    switch (type)
-    {
-    case 0:
-        this->enemy.setSize(sf::Vector2f(10.f, 10.f));
-        this->enemy.setFillColor(sf::Color::Red);
-        break;
-
-    case 1:
-        this->enemy.setSize(sf::Vector2f(20.f, 20.f));
-        this->enemy.setFillColor(sf::Color::Blue);
-        break;
-    
-    case 2:
-        this->enemy.setSize(sf::Vector2f(30.f, 30.f));
-        this->enemy.setFillColor(sf::Color::Green);
-    
-    case 3:
-        this->enemy.setSize(sf::Vector2f(40.f, 40.f));
-        this->enemy.setFillColor(sf::Color::Cyan);
-        break;
-    
-    case 4:
-        this->enemy.setSize(sf::Vector2f(50.f, 50.f));
-        this->enemy.setFillColor(sf::Color::Yellow);
-
-    default:
-        break; 
-    }
-
-    // Spawns Enemy
-    this->enemies.emplace_back(this->enemy);
-}
-
-//=============================================================================
-// ACCESSOR FUNCTIONS
-//=============================================================================
-
-/**
- * @brief Checks window status to allow polling
- * @return bool
- */
-const bool Game::isWindowOpen() const {
-    return this->window->isOpen();
-}
-
-/**
- * @brief Accessor to get endgame condition
- * @return bool 
- */
-const bool Game::getEndGame() const {
-    return this->endGame;
 }
 
 //=============================================================================
@@ -327,37 +100,14 @@ const bool Game::getEndGame() const {
 //=============================================================================
 
 /**
- * @brief Renders game objects
+ * @brief Main render loop that renders out all game related objects
  * @return (void)
- * - Clears current window
- * - Draws Objects
- * - Displays output to screen
  */
 void Game::render() {
-
     this->window->clear();
 
-    // Draw Game
-    this->renderEnemies();
-    this->renderText(*this->window);
+    // Render Game Objects
+    this->player.render(this->window);
 
     this->window->display();
-}
-
-/**
- * @brief Renders each enemy in vector
- * @return (void)
- */
-void Game::renderEnemies() {
-    for(auto& x : this->enemies) {
-        this->window->draw(x);
-    }
-}
-
-/**
- * @brief Draws font to window
- * @return (void)
- */
-void Game::renderText(sf::RenderTarget& target) {
-    target.draw(this->text);
 }

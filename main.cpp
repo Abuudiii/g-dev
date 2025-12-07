@@ -1,25 +1,18 @@
-#include <iostream>
 #include "Game.h"
 
-using namespace sf;
-
 int main() {
-
-    // Init srand
-    std::srand(static_cast<unsigned>(time(NULL)));
+    // Init Srand
+    srand(static_cast<unsigned>(time(0)));
 
     // Init Game Object
     Game game;
 
-    // Game Looping
-    while (game.isWindowOpen() && !game.getEndGame()) {
-        // Update
+    // Game Loop
+    while (game.isRunning()) {
         game.update();
-
-        // Render
         game.render();
-        
-    } // Main Window Loop
+    }
 
+    // End of application
     return 0;
 }
