@@ -227,7 +227,8 @@ void Game::updateEnemies() {
 void Game::updateText() {
     std::stringstream ss;
 
-    ss << "Points: " << this->points;
+    ss << "Points: " << this->points << "\n"
+        << "Health: " << this->health<< "\n";
 
     this->text.setString(ss.str());
 }
