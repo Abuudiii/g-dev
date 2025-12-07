@@ -8,6 +8,9 @@ int main() {
     Game game;
 
     // Game Loop
+    while (game.isRunning()) {
+        
+    }
 
     // End of application
     return 0;

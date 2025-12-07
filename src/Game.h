@@ -12,8 +12,11 @@
 class Game {
 
 private:
+
+    // Game Loop Variables
     sf::VideoMode videoMode;
     sf::RenderWindow* window;
+    sf::Event ev;
     bool endGame;
 
     // Private Init Functions
@@ -26,6 +29,8 @@ public:
     ~Game();
 
     // Accessors (get from class)
+    const bool isRunning() const;
+    void pollEvents();
 
     // Modifiers (modify stuff in class)
 
@@ -36,4 +41,4 @@ public:
 
     // Render Functions
     void render();
-};
+}; 
