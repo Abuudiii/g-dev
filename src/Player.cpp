@@ -58,7 +58,9 @@ void Player::initShape() {
  * @brief Calls Player objects update related functionality
  * @return (void)
  */
-void Player::update() {
+void Player::update(sf::RenderTarget* target) {
+    // Window bound collision
+    
     this->updateInput();
 }
 
