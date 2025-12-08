@@ -67,6 +67,7 @@ const bool Game::isRunning() const {
  */
 void Game::update() {
     this->pollEvents();
+    this->player.update();
 }
 
 /**

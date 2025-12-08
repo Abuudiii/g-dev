@@ -33,6 +33,7 @@ public:
 
     // Update Functions
     void update();
+    void updateInput();
 
     // Render Functions
     void render(sf::RenderTarget* target);
