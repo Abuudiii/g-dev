@@ -38,6 +38,7 @@ void Game::initVariables() {
 void Game::initWindow() {
     this->videoMode = sf::VideoMode(800, 600);
     this->window = new sf::RenderWindow(this->videoMode, "Game Practice!", sf::Style::Close | sf::Style::Titlebar);
+    this->window->setFramerateLimit(60);
 }
 
 //=============================================================================

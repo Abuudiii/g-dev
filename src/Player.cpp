@@ -3,7 +3,9 @@
 /**
  * @brief Constructor
  */
-Player::Player() {
+Player::Player(float x, float y) {
+    this->shape.setPosition(x , y);
+
     this->initVariables();
     this->initShape();
 }
@@ -20,7 +22,7 @@ Player::~Player() {
  * @return (void)
  */
 void Player::initVariables() {
-
+    this->movementSpeed = 10.f;
 }
 
 /**
@@ -34,6 +36,11 @@ void Player::initShape() {
 
 void Player::update() {
 
+
+    // Keyboard Input
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+
+    }
 }
 
 void Player::render(sf::RenderTarget* target) {

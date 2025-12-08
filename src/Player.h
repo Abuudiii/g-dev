@@ -12,6 +12,9 @@ private:
     // Object Attributes
     sf::RectangleShape shape;
 
+    // Movement Attributes
+    float movementSpeed;
+
     // Init Functions
     void initVariables();
     void initShape();
@@ -19,7 +22,7 @@ private:
 public:
 
     // Constructors
-    Player();
+    Player(float x = 0.f, float y = 0.f);
     ~Player();
 
     // Accessors
