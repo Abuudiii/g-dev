@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/absheikh/Documents/cpp/prac/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/main.dir/main.cpp.o -c /home/absheikh/Documents/cpp/prac/main.cpp",
+  "file": "/home/absheikh/Documents/cpp/prac/main.cpp"
+}
+]

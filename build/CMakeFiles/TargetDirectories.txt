@@ -1,0 +1,3 @@
+/home/absheikh/Documents/cpp/prac/build/CMakeFiles/main.dir
+/home/absheikh/Documents/cpp/prac/build/CMakeFiles/edit_cache.dir
+/home/absheikh/Documents/cpp/prac/build/CMakeFiles/rebuild_cache.dir
